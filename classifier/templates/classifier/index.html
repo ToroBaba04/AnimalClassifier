@@ -9,69 +9,101 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 40px 20px;
     }
     
     .classifier-container {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        max-width: 600px;
+        background: var(--bg-white);
+        border-radius: 25px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        max-width: 700px;
         width: 100%;
-        padding: 40px;
+        padding: 50px;
+        animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid var(--border-color);
     }
     
     .classifier-title {
         text-align: center;
-        color: #333;
+        color: var(--dark-text);
         margin-bottom: 10px;
         font-size: 2.5em;
+        font-weight: 700;
+        letter-spacing: -0.5px;
     }
     
     .classifier-subtitle {
         text-align: center;
-        color: #666;
-        margin-bottom: 30px;
-        font-size: 0.95em;
+        color: var(--light-text);
+        margin-bottom: 40px;
+        font-size: 1rem;
+        font-weight: 400;
     }
     
     .upload-area {
-        border: 3px dashed #667eea;
-        border-radius: 15px;
-        padding: 40px;
+        border: 3px dashed var(--primary-color);
+        border-radius: 18px;
+        padding: 50px 30px;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        background: #f8f9ff;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+        pointer-events: none;
     }
     
     .upload-area:hover {
-        background: #f0f2ff;
-        border-color: #764ba2;
-        transform: scale(1.02);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+        border-color: var(--primary-dark);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(59, 130, 246, 0.2);
+    }
+
+    .upload-area:hover::before {
+        left: 100%;
     }
     
     .upload-area.drag-over {
-        background: #e8ebff;
-        border-color: #764ba2;
-        transform: scale(1.05);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
+        border-color: var(--primary-dark);
+        transform: scale(1.02) translateY(-5px);
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
     }
     
     .upload-icon {
-        font-size: 3em;
+        font-size: 3.5em;
         margin-bottom: 15px;
+        animation: bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+
+    .upload-area.drag-over .upload-icon {
+        animation: bounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
     }
     
     .upload-text {
-        color: #333;
-        font-size: 1.1em;
-        margin-bottom: 5px;
-        font-weight: 500;
+        color: var(--dark-text);
+        font-size: 1.2em;
+        margin-bottom: 8px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
     }
     
     .upload-hint {
-        color: #999;
+        color: var(--light-text);
         font-size: 0.9em;
+        font-weight: 400;
     }
     
     input[type="file"] {
@@ -80,50 +112,201 @@
     
     .button-group {
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        gap: 15px;
+        margin-top: 30px;
         justify-content: center;
+        flex-wrap: wrap;
     }
     
     .classifier-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
         color: white;
         border: none;
-        padding: 12px 30px;
-        border-radius: 8px;
-        font-size: 1em;
+        padding: 14px 35px;
+        border-radius: 12px;
+        font-size: 1.05em;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .classifier-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s ease;
     }
     
     .classifier-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.4);
+    }
+
+    .classifier-btn:hover::before {
+        left: 100%;
     }
     
     .classifier-btn:active {
-        transform: translateY(0);
+        transform: translateY(-1px);
+    }
+
+    .classifier-btn-secondary {
+        background: var(--border-color);
+        color: var(--dark-text);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .classifier-btn-secondary:hover {
+        background: #cbd5e0;
     }
     
-    .btn-secondary-custom {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .loading.show {
+        display: block;
+        opacity: 1;
+    }
+    
+    .spinner {
+        border: 4px solid var(--border-color);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .result {
-        margin-top: 30px;
-        padding: 20px;
-        background: #f9f9f9;
-        border-radius: 15px;
         display: none;
+        margin-top: 40px;
+        opacity: 0;
+        animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        transition: opacity 0.3s ease;
     }
     
     .result.show {
         display: block;
-        animation: slideIn 0.3s ease;
+        opacity: 1;
+    }
+
+    .result-image {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .result-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .result-card {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        border-radius: 15px;
+        padding: 30px;
+        border-left: 5px solid var(--primary-color);
+        animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s backwards;
+    }
+
+    .result-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .result-prediction {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 20px;
+    }
+
+    .confidence-section {
+        margin-bottom: 20px;
+    }
+
+    .confidence-label {
+        font-size: 0.9rem;
+        color: var(--light-text);
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .confidence-bar-container {
+        width: 100%;
+        height: 12px;
+        background: var(--border-color);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
+        border-radius: 5px;
+        transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
     }
     
-    @keyframes slideIn {
+    .error {
+        display: none;
+        background: rgba(239, 68, 68, 0.15);
+        color: #dc2626;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        border-left: 4px solid #ef4444;
+        opacity: 0;
+        animation: slideDown 0.3s ease-out forwards;
+        font-weight: 500;
+    }
+
+    @keyframes slideDown {
         from {
             opacity: 0;
             transform: translateY(-10px);
@@ -134,97 +317,52 @@
         }
     }
     
-    .result-image {
-        width: 100%;
-        max-height: 300px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        object-fit: cover;
-    }
-    
-    .result-content {
-        text-align: center;
-    }
-    
-    .prediction {
-        font-size: 1.5em;
-        font-weight: bold;
-        color: #667eea;
-        margin-bottom: 10px;
-        text-transform: capitalize;
-    }
-    
-    .confidence {
-        font-size: 1.2em;
-        color: #666;
-    }
-    
-    .confidence-bar {
-        width: 100%;
-        height: 8px;
-        background: #e0e0e0;
-        border-radius: 4px;
-        margin-top: 10px;
-        overflow: hidden;
-    }
-    
-    .confidence-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        transition: width 0.3s ease;
-    }
-    
-    .loading {
-        display: none;
-        text-align: center;
-        margin: 20px 0;
-    }
-    
-    .loading.show {
-        display: block;
-    }
-    
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 10px;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .error {
-        background: #fee;
-        color: #c00;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 15px;
-        display: none;
-    }
-    
     .error.show {
         display: block;
+        opacity: 1;
     }
-    
-    .history-link {
-        text-align: center;
-        margin-top: 20px;
-    }
-    
-    .history-link a {
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    
-    .history-link a:hover {
-        text-decoration: underline;
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container-main {
+            padding: 20px 15px;
+        }
+
+        .classifier-container {
+            padding: 30px 20px;
+            border-radius: 20px;
+        }
+
+        .classifier-title {
+            font-size: 1.8rem;
+        }
+
+        .upload-area {
+            padding: 35px 20px;
+            border-radius: 15px;
+        }
+
+        .upload-icon {
+            font-size: 2.5em;
+        }
+
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .classifier-btn {
+            width: 100%;
+            padding: 12px 20px;
+        }
+
+        .result-card {
+            padding: 20px;
+        }
+
+        .result-prediction {
+            font-size: 1.5rem;
+        }
     }
 </style>
 {% endblock %}
@@ -246,30 +384,32 @@
         
         <div class="button-group">
             <button class="classifier-btn" id="uploadBtn">Choose Image</button>
-            <button class="classifier-btn btn-secondary-custom" id="clearBtn">Clear</button>
+            <button class="classifier-btn classifier-btn-secondary" id="clearBtn">Clear</button>
         </div>
         
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <div>Classifying image...</div>
+            <p>Classifying image...</p>
         </div>
         
         <div class="result" id="result">
             <img id="resultImage" class="result-image" src="" alt="Uploaded image">
-            <div class="result-content">
-                <div class="prediction" id="prediction"></div>
-                <div class="confidence">Confidence: <span id="confidenceText"></span></div>
-                <div class="confidence-bar">
-                    <div class="confidence-fill" id="confidenceFill"></div>
+            <div class="result-card">
+                <div class="result-label">Classification Result</div>
+                <div class="result-prediction" id="prediction"></div>
+                <div class="confidence-section">
+                    <div class="confidence-label">
+                        <span>Confidence Level</span>
+                        <span id="confidenceText"></span>
+                    </div>
+                    <div class="confidence-bar-container">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="error" id="error"></div>
-        
-        <div class="history-link">
-            <a href="{% url 'classifier:history' %}">📋 View Classification History</a>
-        </div>
     </div>
 </div>
 
@@ -330,7 +470,10 @@
         
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        
+        // Get CSRF token from the hidden input field
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        formData.append('csrfmiddlewaretoken', csrfToken);
         
         loading.classList.add('show');
         error.classList.remove('show');
@@ -339,6 +482,7 @@
         fetch('{% url "classifier:upload" %}', {
             method: 'POST',
             body: formData,
+            credentials: 'same-origin',
         })
         .then(response => response.json())
         .then(data => {
@@ -371,21 +515,6 @@
     function showError(message) {
         error.textContent = message;
         error.classList.add('show');
-    }
-    
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
     }
 </script>
 {% endblock %}

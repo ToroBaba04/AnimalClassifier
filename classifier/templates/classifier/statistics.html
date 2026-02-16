@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - Animal Classifier{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html.dark-mode body {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    }
+
+    .stats-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .stats-header {
+        text-align: center;
+        margin-bottom: 50px;
+        animation: slideDown 0.6s ease-out;
+    }
+
+    .stats-title {
+        font-size: 2.8rem;
+        color: white;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .stats-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 300;
+    }
+
+    html.dark-mode .stat-card-label {
+        color: #6b7280;
+    }
+
+    html.dark-mode .stat-card-value {
+        color: #1f2937;
+    }
+
+    html.dark-mode .stat-card-description {
+        color: #9ca3af;
+    }
+
+    /* Grid Layout */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: var(--bg-white);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+        border: 1px solid var(--border-color);
+    }
+
+    html.dark-mode .stat-card {
+        background: var(--bg-white);
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .stat-card-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .stat-card-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 5px;
+    }
+
+    .stat-card-secondary {
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    .chart-card:nth-child(1) { animation-delay: 0.5s; }
+    .chart-card:nth-child(2) { animation-delay: 0.6s; }
+
+    .chart-card:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+
+    .chart-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    /* Animal Distribution */
+    .distribution-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .distribution-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .distribution-icon {
+        font-size: 2rem;
+        width: 50px;
+    }
+
+    .distribution-info {
+        flex: 1;
+    }
+
+    .distribution-name {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 5px;
+    }
+
+    .distribution-bar-container {
+        width: 100%;
+        height: 8px;
+        background: var(--bg-light);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .distribution-bar {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .distribution-bar.dog {
+        background: linear-gradient(90deg, #3b82f6, #1e40af);
+    }
+
+    .distribution-bar.cat {
+        background: linear-gradient(90deg, #60a5fa, #3b82f6);
+    }
+
+    .distribution-bar.bird {
+        background: linear-gradient(90deg, #93c5fd, #60a5fa);
+    }
+
+    .distribution-percentage {
+        font-weight: 700;
+        color: var(--dark-text);
+        min-width: 60px;
+        text-align: right;
+    }
+
+    /* Confidence Distribution */
+    .confidence-distribution {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .confidence-item {
+        background: var(--bg-light);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .confidence-item:hover {
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .confidence-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
+    .confidence-count {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+    }
+
+    .confidence-high { color: var(--success-color); }
+    .confidence-medium { color: var(--warning-color); }
+    .confidence-low { color: var(--danger-color); }
+
+    /* Most Common & Best */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    .info-card:nth-child(1) { animation-delay: 0.7s; }
+    .info-card:nth-child(2) { animation-delay: 0.8s; }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .info-value {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .info-icon {
+        font-size: 3rem;
+    }
+
+    .info-text {
+        flex: 1;
+    }
+
+    .info-main {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark-text);
+    }
+
+    .info-sub {
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+
+    /* No Data */
+    .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--light-text);
+    }
+
+    .no-data-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .no-data-text {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .no-data-link {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .no-data-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Animations */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .stats-container {
+            padding: 20px 15px;
+        }
+
+        .stats-title {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .confidence-distribution {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card-value {
+            font-size: 1.8rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-container">
+    <div class="stats-header">
+        <h1 class="stats-title">📊 Your Statistics</h1>
+        <p class="stats-subtitle">Comprehensive analysis of your animal classifications</p>
+    </div>
+
+    {% if stats.total_predictions > 0 %}
+        <!-- Key Metrics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon">📸</div>
+                <div class="stat-card-label">Total Predictions</div>
+                <div class="stat-card-value">{{ stats.total_predictions }}</div>
+                <div class="stat-card-secondary">All time predictions made</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-icon">📈</div>
+                <div class="stat-card-label">Average Confidence</div>
+                <div class="stat-card-value">{{ stats.avg_confidence }}</div>
+                <div class="stat-card-secondary">Prediction reliability</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-icon">📅</div>
+                <div class="stat-card-label">Last 7 Days</div>
+                <div class="stat-card-value">{{ stats.recent_predictions_7days }}</div>
+                <div class="stat-card-secondary">Recent predictions</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-icon">🏆</div>
+                <div class="stat-card-label">Most Confident</div>
+                {% if stats.highest_confidence %}
+                    <div class="stat-card-value">{{ stats.highest_confidence.confidence|floatformat:0 }}%</div>
+                    <div class="stat-card-secondary">{{ stats.highest_confidence.prediction|title }}</div>
+                {% else %}
+                    <div class="stat-card-value">-</div>
+                    <div class="stat-card-secondary">No predictions yet</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <!-- Animal Distribution -->
+            <div class="chart-card">
+                <h2 class="chart-title">🐾 Animal Distribution</h2>
+                <div class="distribution-list">
+                    <div class="distribution-item">
+                        <div class="distribution-icon">🐕</div>
+                        <div class="distribution-info">
+                            <div class="distribution-name">Dogs</div>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar dog" style="width: {{ stats.dog_percentage|default:0 }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="distribution-percentage">{{ stats.dog_count }}<br><small style="font-weight: 400; color: var(--light-text);">{{ stats.dog_percentage|floatformat:0 }}%</small></div>
+                    </div>
+
+                    <div class="distribution-item">
+                        <div class="distribution-icon">🐈</div>
+                        <div class="distribution-info">
+                            <div class="distribution-name">Cats</div>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar cat" style="width: {{ stats.cat_percentage|default:0 }}%"></div>
+                            </div>
+                        </div>
+                        <div class="distribution-percentage">{{ stats.cat_count }}<br><small style="font-weight: 400; color: var(--light-text);">{{ stats.cat_percentage|floatformat:0 }}%</small></div>
+                    </div>
+
+                    <div class="distribution-item">
+                        <div class="distribution-icon">🐦</div>
+                        <div class="distribution-info">
+                            <div class="distribution-name">Birds</div>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar bird" style="width: {{ stats.bird_percentage|default:0 }}%"></div>
+                            </div>
+                        </div>
+                        <div class="distribution-percentage">{{ stats.bird_count }}<br><small style="font-weight: 400; color: var(--light-text);">{{ stats.bird_percentage|floatformat:0 }}%</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confidence Distribution -->
+            <div class="chart-card">
+                <h2 class="chart-title">📊 Confidence Distribution</h2>
+                <div class="confidence-distribution">
+                    <div class="confidence-item">
+                        <div class="confidence-label">High (≥80%)</div>
+                        <div class="confidence-count confidence-high">{{ stats.high_confidence_count }}</div>
+                    </div>
+                    <div class="confidence-item">
+                        <div class="confidence-label">Medium (60-80%)</div>
+                        <div class="confidence-count confidence-medium">{{ stats.medium_confidence_count }}</div>
+                    </div>
+                    <div class="confidence-item">
+                        <div class="confidence-label">Low (<60%)</div>
+                        <div class="confidence-count confidence-low">{{ stats.low_confidence_count }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Most Common Animal</div>
+                <div class="info-value">
+                    <div class="info-icon">
+                        {% if stats.most_common == 'dog' %}🐕
+                        {% elif stats.most_common == 'cat' %}🐈
+                        {% elif stats.most_common == 'bird' %}🐦
+                        {% else %}❓{% endif %}
+                    </div>
+                    <div class="info-text">
+                        <div class="info-main">{{ stats.most_common|title }}</div>
+                        <div class="info-sub">Your top classification</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-label">Classification Summary</div>
+                <div class="info-value">
+                    <div class="info-icon">📋</div>
+                    <div class="info-text">
+                        <div class="info-main">{{ stats.total_predictions }} Total</div>
+                        <div class="info-sub">Classifications analyzed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- No Data State -->
+        <div class="chart-card" style="text-align: center; padding: 80px 20px;">
+            <div class="no-data">
+                <div class="no-data-icon">📸</div>
+                <div class="no-data-text">No predictions yet</div>
+                <p style="color: var(--light-text); margin-bottom: 30px; font-size: 0.95rem;">
+                    Start making predictions to see your statistics here
+                </p>
+                <a href="{% url 'classifier:index' %}" class="no-data-link">Start Classifying</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate progress bars when page loads
+    window.addEventListener('load', () => {
+        const bars = document.querySelectorAll('.distribution-bar');
+        bars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

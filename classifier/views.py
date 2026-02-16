@@ -342,3 +342,68 @@ def history(request):
     return render(request, 'classifier/history.html', {
         'classifications': classifications
     })
+
+
+@login_required(login_url='classifier:login')
+def statistics(request):
+    """Display user statistics dashboard"""
+    # Get all user's classifications
+    classifications = Classification.objects.filter(user=request.user)
+    
+    # Calculate statistics
+    total_predictions = classifications.count()
+    
+    # Count by animal type
+    dog_count = classifications.filter(prediction='dog').count()
+    cat_count = classifications.filter(prediction='cat').count()
+    bird_count = classifications.filter(prediction='bird').count()
+    
+    # Calculate average confidence
+    if total_predictions > 0:
+        avg_confidence = sum(
+            [c.confidence for c in classifications]
+        ) / total_predictions
+    else:
+        avg_confidence = 0
+    
+    # Get highest confidence prediction
+    highest_confidence = classifications.order_by('-confidence').first()
+    
+    # Get most common prediction
+    from django.db.models import Count
+    most_common = classifications.values('prediction').annotate(
+        count=Count('prediction')
+    ).order_by('-count').first()
+    
+    # Recent predictions (last 7 days)
+    from datetime import timedelta
+    from django.utils import timezone
+    last_7_days = timezone.now() - timedelta(days=7)
+    recent_count = classifications.filter(created_at__gte=last_7_days).count()
+    
+    # Confidence distribution
+    high_confidence = classifications.filter(confidence__gte=0.8).count()
+    medium_confidence = classifications.filter(confidence__gte=0.6, confidence__lt=0.8).count()
+    low_confidence = classifications.filter(confidence__lt=0.6).count()
+    
+    stats = {
+        'total_predictions': total_predictions,
+        'dog_count': dog_count,
+        'cat_count': cat_count,
+        'bird_count': bird_count,
+        'dog_percentage': (dog_count / total_predictions * 100) if total_predictions > 0 else 0,
+        'cat_percentage': (cat_count / total_predictions * 100) if total_predictions > 0 else 0,
+        'bird_percentage': (bird_count / total_predictions * 100) if total_predictions > 0 else 0,
+        'avg_confidence': f"{avg_confidence:.2%}",
+        'highest_confidence': highest_confidence,
+        'most_common': most_common['prediction'] if most_common else 'N/A',
+        'recent_predictions_7days': recent_count,
+        'high_confidence_count': high_confidence,
+        'medium_confidence_count': medium_confidence,
+        'low_confidence_count': low_confidence,
+    }
+    
+    return render(request, 'classifier/statistics.html', {
+        'stats': stats
+    })
+

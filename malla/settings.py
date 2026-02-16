@@ -130,14 +130,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration for 2FA
-# For production, use a real email service (Gmail, SendGrid, etc.)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Change to 'django.core.mail.backends.smtp.EmailBackend' for production
-EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
+# Using Gmail SMTP (requires app password from Google Account)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'  # Set in environment variable
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Set in environment variable
-DEFAULT_FROM_EMAIL = 'noreply@animalerie.local'
+EMAIL_HOST_USER = 'babatoro04@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'mbga frka ozms rncl'  # Replace with the app password from Step 1
+DEFAULT_FROM_EMAIL = 'babatoro04@gmail.com'  # Should match EMAIL_HOST_USER
 
 # Security Settings
 LOGIN_URL = 'classifier:login'

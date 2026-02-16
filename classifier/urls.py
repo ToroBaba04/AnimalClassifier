@@ -15,4 +15,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('upload/', views.upload_image, name='upload'),
     path('history/', views.history, name='history'),
+    path('statistics/', views.statistics, name='statistics'),
 ]
