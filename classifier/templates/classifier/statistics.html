@@ -4,6 +4,13 @@
 
 {% block extra_css %}
 <style>
+    .container-main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
     body {
         background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
         min-height: 100vh;
@@ -16,9 +23,9 @@
 
     .stats-container {
         max-width: 1400px;
+        width: 100%;
         margin: 0 auto;
-        padding: 40px 20px;
-        min-height: calc(100vh - 200px);
+        padding: 0;
     }
 
     .stats-header {
@@ -42,15 +49,15 @@
     }
 
     html.dark-mode .stat-card-label {
-        color: #6b7280;
+        color: #9ca3af;
     }
 
     html.dark-mode .stat-card-value {
-        color: #1f2937;
+        color: #f3f4f6;
     }
 
     html.dark-mode .stat-card-description {
-        color: #9ca3af;
+        color: #d1d5db;
     }
 
     /* Grid Layout */
@@ -73,7 +80,8 @@
     }
 
     html.dark-mode .stat-card {
-        background: var(--bg-white);
+        background: #1f2937;
+        border-color: #374151;
     }
 
     .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -129,6 +137,10 @@
         opacity: 0;
     }
 
+    html.dark-mode .chart-card {
+        background: #1f2937;
+    }
+
     .chart-card:nth-child(1) { animation-delay: 0.5s; }
     .chart-card:nth-child(2) { animation-delay: 0.6s; }
 
@@ -144,6 +156,10 @@
         color: var(--dark-text);
         margin-bottom: 25px;
         text-align: center;
+    }
+
+    html.dark-mode .chart-title {
+        color: #f3f4f6;
     }
 
     /* Animal Distribution */
@@ -207,6 +223,14 @@
         text-align: right;
     }
 
+    html.dark-mode .distribution-name {
+        color: #f3f4f6;
+    }
+
+    html.dark-mode .distribution-percentage {
+        color: #f3f4f6;
+    }
+
     /* Confidence Distribution */
     .confidence-distribution {
         display: grid;
@@ -227,6 +251,14 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
+    html.dark-mode .confidence-item {
+        background: #374151;
+    }
+
+    html.dark-mode .confidence-item:hover {
+        background: #1f2937;
+    }
+
     .confidence-label {
         font-size: 0.85rem;
         color: var(--light-text);
@@ -240,6 +272,14 @@
         font-size: 2rem;
         font-weight: 700;
         color: var(--dark-text);
+    }
+
+    html.dark-mode .confidence-label {
+        color: #9ca3af;
+    }
+
+    html.dark-mode .confidence-count {
+        color: #f3f4f6;
     }
 
     .confidence-high { color: var(--success-color); }
@@ -260,6 +300,10 @@
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         animation: fadeInUp 0.6s ease-out forwards;
         opacity: 0;
+    }
+
+    html.dark-mode .info-card {
+        background: #1f2937;
     }
 
     .info-card:nth-child(1) { animation-delay: 0.7s; }
@@ -305,11 +349,27 @@
         color: var(--light-text);
     }
 
+    html.dark-mode .info-label {
+        color: #9ca3af;
+    }
+
+    html.dark-mode .info-main {
+        color: #f3f4f6;
+    }
+
+    html.dark-mode .info-sub {
+        color: #d1d5db;
+    }
+
     /* No Data */
     .no-data {
         text-align: center;
         padding: 60px 20px;
         color: var(--light-text);
+    }
+
+    html.dark-mode .no-data {
+        color: #d1d5db;
     }
 
     .no-data-icon {
@@ -320,12 +380,17 @@
     .no-data-text {
         font-size: 1.2rem;
         margin-bottom: 20px;
+        color: var(--dark-text);
+    }
+
+    html.dark-mode .no-data-text {
+        color: #f3f4f6;
     }
 
     .no-data-link {
         display: inline-block;
         padding: 12px 30px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
         color: white;
         text-decoration: none;
         border-radius: 8px;
@@ -335,7 +400,7 @@
 
     .no-data-link:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
     }
 
     /* Animations */
@@ -396,9 +461,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="stats-container">
-    <div class="stats-header">
-        <h1 class="stats-title">📊 Your Statistics</h1>
+<div class="container-main">
+    <div class="stats-container">
+        <div class="stats-header">
+            <h1 class="stats-title">📊 Your Statistics</h1>
         <p class="stats-subtitle">Comprehensive analysis of your animal classifications</p>
     </div>
 
@@ -544,6 +610,7 @@
             </div>
         </div>
     {% endif %}
+    </div>
 </div>
 {% endblock %}
 

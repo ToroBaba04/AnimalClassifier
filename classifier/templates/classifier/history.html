@@ -88,16 +88,143 @@
     .card-content {
         padding: 25px;
     }
+
+    .card-animal {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+
+    html.dark-mode .card-animal {
+        color: #f3f4f6;
+    }
+
+    .card-animal-emoji {
+        font-size: 1.5rem;
+    }
+
+    .card-confidence {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .confidence-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--light-text);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    html.dark-mode .confidence-label {
+        color: #9ca3af;
+    }
+
+    .confidence-bar-container {
+        width: 100%;
+        height: 8px;
+        background: var(--bg-light);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    html.dark-mode .confidence-bar-container {
+        background: #374151;
+    }
+
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
+        transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-radius: 4px;
+    }
+
+    .card-date {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        margin-top: 10px;
+        font-weight: 500;
+    }
+
+    html.dark-mode .card-date {
+        color: #9ca3af;
+    }
+
+    .no-data {
+        background: white;
+        border-radius: 18px;
+        padding: 60px 40px;
+        text-align: center;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    html.dark-mode .no-data {
+        background: #1f2937;
+    }
+
+    .no-data-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .no-data-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+    }
+
+    html.dark-mode .no-data-text {
+        color: #f3f4f6;
+    }
+
+    .no-data-subtext {
+        color: var(--light-text);
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+    }
+
+    html.dark-mode .no-data-subtext {
+        color: #9ca3af;
+    }
+
+    .no-data-link {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .no-data-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
         to {
             opacity: 1;
             transform: translateY(0);
         }
-    
+    }
 
-    @keyframes slideIn {
+    @keyframes slideDown {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(-20px);
         }
         to {
             opacity: 1;
@@ -177,115 +304,3 @@
     </div>
 </div>
 {% endblock %}
-        .animal-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #3b82f6;
-            text-transform: capitalize;
-        }
-        
-        .confidence-section {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .confidence-label {
-            color: #666;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-        
-        .confidence-bar {
-            width: 150px;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .confidence-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
-            transition: width 0.3s ease;
-            width: var(--fill-width, 0%);
-        }
-        
-        .timestamp {
-            color: #999;
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .empty-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-        
-        .empty-text {
-            color: #999;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
-        
-        .empty-btn {
-            color: white;
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-        
-        .empty-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📋 Classification History</h1>
-            <a href="{% url 'classifier:index' %}" class="back-btn">← Back to Classifier</a>
-        </div>
-        
-        {% load custom_filters %}
-        {% if classifications %}
-            <div class="classifications-list">
-                {% for classification in classifications %}
-                    <div class="classification-card">
-                        <img src="{{ classification.image.url }}" alt="{{ classification.prediction }}" class="card-image">
-                        <div class="card-info">
-                            <div class="animal-name">{{ classification.prediction }}</div>
-                            <div class="confidence-section">
-                                <div class="confidence-label">
-                                    Confidence: {{ classification.confidence|mul:100|floatformat:1 }}%
-                                </div>
-                                <div class="confidence-bar">
-                                    <div class="confidence-fill" style="--fill-width: {{ classification.confidence|mul:100|floatformat:0 }}%;"></div>
-                                </div>
-                            </div>
-                            <div class="timestamp">📅 {{ classification.created_at|date:"M d, Y at H:i" }}</div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-icon">📸</div>
-                <p class="empty-text">No classifications yet.</p>
-                <p class="empty-text">Start by uploading an image to classify it!</p>
-                <a href="{% url 'classifier:index' %}" class="empty-btn">Go to Classifier</a>
-            </div>
-        {% endif %}
-    </div>
-</body>
-</html>
