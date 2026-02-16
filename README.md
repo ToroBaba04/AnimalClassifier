@@ -47,7 +47,7 @@ animalerie/
 ### 1. Clone or Extract the Project
 
 ```bash
-cd /home/el_pepe/Documents/animalerie
+git clone https://github.com/ToroBaba04/AnimalClassifier.git
 ```
 
 ### 2. Create a Virtual Environment
