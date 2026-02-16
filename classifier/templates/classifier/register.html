@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - Animal Classifier{% endblock %}
+
+{% block content %}
+<div class="container-main">
+    <div class="card" style="width: 100%; max-width: 500px;">
+        <div class="card-header">
+            <h2>Create Account</h2>
+           <p class="text-white-50">Join us today</p>
+        </div>
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {{ form.username|as_crispy_field }}
+                {{ form.email|as_crispy_field }}
+                {{ form.password1|as_crispy_field }}
+                {{ form.password2|as_crispy_field }}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ form.non_field_errors }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary mt-4">Create Account</button>
+            </form>
+
+            <hr class="my-4">
+            <p class="text-center text-muted">
+                Already have an account? <a href="{% url 'classifier:login' %}">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

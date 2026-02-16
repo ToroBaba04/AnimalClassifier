@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verify 2FA - Animal Classifier{% endblock %}
+
+{% block content %}
+<div class="container-main">
+    <div class="card" style="width: 100%; max-width: 500px;">
+        <div class="card-header">
+            <h2>Verify Your Identity</h2>
+            <p class="text-white-50">Enter the 6-digit code sent to {{ email }}</p>
+        </div>
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>⚠️ {{ error }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="id_token" class="form-label">Verification Code</label>
+                    <input type="text" 
+                           inputmode="numeric" 
+                           pattern="[0-9]{6}"
+                           maxlength="6"
+                           name="token" 
+                           id="id_token" 
+                           class="form-control form-control-lg text-center"
+                           placeholder="000000"
+                           required
+                           autofocus
+                           style="font-size: 2em; letter-spacing: 10px; font-weight: bold;">
+                    <small class="text-muted d-block mt-2">
+                        Enter the 6 digits you received via email
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-4">Verify & {% if is_signup %}Create Account{% else %}Login{% endif %}</button>
+            </form>
+
+            <hr class="my-4">
+            <p class="text-center text-muted" style="font-size: 0.9em;">
+                {% if is_signup %}
+                    Didn't receive the code? Check your spam folder or <a href="{% url 'classifier:register' %}">retry signup</a>
+                {% else %}
+                    Didn't receive the code? <a href="{% url 'classifier:login' %}">Go back to login</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-focus next input and prevent non-numeric input
+    document.getElementById('id_token').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+    });
+</script>
+{% endblock %}
