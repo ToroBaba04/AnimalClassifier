@@ -95,12 +95,12 @@
         gap: 10px;
         margin-bottom: 15px;
         font-size: 1.3rem;
-        font-weight: 600;
-        color: var(--dark-text);
+        font-weight: 700;
+        color: #1f2937;
     }
 
     html.dark-mode .card-animal {
-        color: #f3f4f6;
+        color: #3b82f6;
     }
 
     .card-animal-emoji {
@@ -124,6 +124,18 @@
 
     html.dark-mode .confidence-label {
         color: #9ca3af;
+    }
+
+    .confidence-value {
+        text-align: right;
+        font-size: 0.85rem;
+        color: var(--dark-text);
+        margin-top: 5px;
+        font-weight: 600;
+    }
+
+    html.dark-mode .confidence-value {
+        color: #e5e7eb;
     }
 
     .confidence-bar-container {
@@ -284,7 +296,7 @@
                                 <div class="confidence-bar-container">
                                     <div class="confidence-fill" style="width: {{ classification.confidence|floatformat:0|default:0 }}%"></div>
                                 </div>
-                                <div style="text-align: right; font-size: 0.85rem; color: var(--light-text); margin-top: 5px; font-weight: 600;">{{ classification.confidence|floatformat:1|add:"" }}%</div>
+                                <div class="confidence-value">{{ classification.confidence|floatformat:1 }}%</div>
                             </div>
                             <div class="card-date">
                                 📅 {{ classification.created_at|date:"M d, Y" }}
