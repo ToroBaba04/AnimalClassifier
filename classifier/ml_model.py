@@ -21,31 +21,61 @@ class AnimalClassifier:
         """Initialize the custom trained model"""
         # Get the model path relative to this file
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        weights_path = os.path.join(current_dir, 'model', 'ANN_model.weights.h5')
+        model_dir = os.path.join(current_dir, 'model')
         
-        # Check if weights file exists
-        if not os.path.exists(weights_path):
-            raise FileNotFoundError(
-                f"Model weights not found at:\n"
-                f"  {weights_path}\n"
-                f"Please place your trained model (CatDogBird_model_Adv.h5) in the classifier/model/ directory"
-            )
-        
-        # Rebuild the model architecture matching the Kaggle training
-        try:
-            self.model = self._build_model()
-            # Load the trained weights
-            self.model.load_weights(weights_path)
-            print(f"✓ Model loaded successfully from {weights_path}")
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to load model weights from {weights_path}\n"
-                f"Error: {e}\n"
-                f"Ensure the H5 file contains weights from the trained EfficientNetB0 model"
-            )
-        
+        # Try to load from full model file first, then from weights
+        self.model = self._load_model(model_dir)
         self.classes = ['bird', 'cat', 'dog']  # Class order from training
         self.img_size = (224, 224)
+    
+    def _load_model(self, model_dir):
+        """
+        Attempt to load model from .h5 file or weights file
+        
+        Args:
+            model_dir: Path to model directory
+            
+        Returns:
+            Compiled Keras model
+        """
+        # Try loading from full model files first
+        model_candidates = [
+            'CatDogBird_model.h5',
+            'CatDogBird_model_Adv.h5',
+            'model.h5'
+        ]
+        
+        for model_name in model_candidates:
+            model_path = os.path.join(model_dir, model_name)
+            if os.path.exists(model_path):
+                try:
+                    print(f"Loading model from {model_path}...")
+                    model = tf.keras.models.load_model(model_path)
+                    print(f"✓ Model loaded successfully from {model_path}")
+                    return model
+                except Exception as e:
+                    print(f"Failed to load from {model_path}: {e}")
+                    continue
+        
+        # If full model not found, try to load from weights
+        weights_path = os.path.join(model_dir, 'ANN_model.weights.h5')
+        if os.path.exists(weights_path):
+            try:
+                print(f"Loading model architecture and weights from {weights_path}...")
+                model = self._build_model()
+                model.load_weights(weights_path)
+                print(f"✓ Model loaded successfully from {weights_path}")
+                return model
+            except Exception as e:
+                print(f"Failed to load from weights: {e}")
+        
+        # If we get here, no model files were found
+        raise FileNotFoundError(
+            f"No model files found in {model_dir}\n"
+            f"Please place one of the following in the classifier/model/ directory:\n"
+            f"  - Full model: CatDogBird_model.h5 or CatDogBird_model_Adv.h5\n"
+            f"  - Weights only: ANN_model.weights.h5 (will rebuild architecture)\n"
+        )
     
     def _build_model(self):
         """Rebuild the EfficientNetB0 architecture used during training"""
